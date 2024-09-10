@@ -10,7 +10,9 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
-# 检查是否已安装 Docker
+# 检查并安装 Docker 和 Docker Compose
+function install_docker_and_compose() {
+    # 检查是否已安装 Docker
     if ! command -v docker &> /dev/null; then
         echo "Docker 未安装，正在安装 Docker..."
 
@@ -105,9 +107,11 @@ function main_menu() {
                 echo "正在启动节点..."
                 install_docker_and_compose
                 setup_and_start_node
+                read -p "操作完成。按任意键返回主菜单。" -n1 -s
                 ;;
             2)
                 view_logs
+                read -p "按任意键返回主菜单。" -n1 -s
                 ;;
             3)
                 echo "退出脚本。"
