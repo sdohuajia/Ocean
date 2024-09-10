@@ -10,43 +10,35 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
-# 安装 Docker 和 Docker Compose
-function install_docker_and_compose() {
-    # 更新系统包列表
-    apt-get update
+# 检查是否已安装 Docker
+    if ! command -v docker &> /dev/null; then
+        echo "Docker 未安装，正在安装 Docker..."
 
-    # 安装必要的工具
-    apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-
-    # 添加 Docker 官方 GPG 密钥
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-
-    # 添加 Docker APT 仓库
-    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-
-    # 更新包列表
-    apt-get update
-
-    # 安装 Docker Engine 和相关组件
-    apt-get install -y docker-ce docker-ce-cli containerd.io
-
-    # 启动 Docker 服务并设置为开机自启
-    systemctl start docker
-    systemctl enable docker
+        # 安装 Docker 和依赖
+        sudo apt-get update
+        sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+        sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+        sudo apt-get update
+        sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+        sudo systemctl start docker
+        sudo systemctl enable docker
+    else
+        echo "Docker 已安装，跳过安装步骤。"
+    fi
 
     # 验证 Docker 状态
     echo "Docker 状态:"
-    systemctl status docker --no-pager
+    sudo systemctl status docker --no-pager
 
-    # 检查 Docker Compose 是否已安装
+    # 检查是否已安装 Docker Compose
     if ! command -v docker-compose &> /dev/null; then
         echo "Docker Compose 未安装，正在安装 Docker Compose..."
-        # 安装 Docker Compose
         DOCKER_COMPOSE_VERSION="2.20.2"
-        curl -fsSL "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        chmod +x /usr/local/bin/docker-compose
+        sudo curl -L "https://github.com/docker/compose/releases/download/v$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose
     else
-        echo "Docker Compose 已安装。"
+        echo "Docker Compose 已安装，跳过安装步骤。"
     fi
 
     # 输出 Docker Compose 版本
