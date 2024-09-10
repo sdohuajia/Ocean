@@ -13,7 +13,11 @@ fi
 # 获取公共 IP 地址
 function get_public_ip() {
     # 使用外部服务获取公共 IP
-    PUBLIC_IP=$(curl -s ifconfig.me)
+    PUBLIC_IP=$(curl -fsSL ifconfig.me)
+    if [ -z "$PUBLIC_IP" ]; then
+        echo "无法获取公共 IP 地址。"
+        exit 1
+    fi
     echo "$PUBLIC_IP"
 }
 
@@ -50,7 +54,7 @@ function install_docker_and_compose() {
         echo "Docker Compose 未安装，正在安装 Docker Compose..."
         # 安装 Docker Compose
         DOCKER_COMPOSE_VERSION="2.20.2"
-        curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        curl -fsSL "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
         chmod +x /usr/local/bin/docker-compose
     else
         echo "Docker Compose 已安装。"
@@ -65,10 +69,10 @@ function install_docker_and_compose() {
 function setup_and_start_node() {
     # 创建目录并进入
     mkdir -p ocean
-    cd ocean || exit
+    cd ocean || { echo "无法进入目录"; exit 1; }
 
     # 下载节点脚本并赋予执行权限
-    curl -O https://raw.githubusercontent.com/oceanprotocol/ocean-node/main/scripts/ocean-node-quickstart.sh
+    curl -fsSL -O https://raw.githubusercontent.com/oceanprotocol/ocean-node/main/scripts/ocean-node-quickstart.sh
     chmod +x ocean-node-quickstart.sh
 
     # 提示用户
@@ -93,7 +97,7 @@ function setup_and_start_node() {
 function view_logs() {
     echo "查看 Docker 日志..."
     if [ -d "ocean" ]; then
-        cd ocean || exit
+        cd ocean || { echo "无法进入目录"; exit 1; }
         docker-compose logs -f
     else
         echo "请先启动节点，目录 'ocean' 不存在。"
