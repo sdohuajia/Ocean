@@ -10,13 +10,6 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
-# 获取公共 IP 地址
-function get_public_ip() {
-    # 使用外部服务获取公共 IP
-    PUBLIC_IP=$(curl -s ifconfig.me)
-    echo "$PUBLIC_IP"
-}
-
 # 安装 Docker 和 Docker Compose
 function install_docker_and_compose() {
     # 更新系统包列表
@@ -102,11 +95,8 @@ function view_logs() {
 
 # 检查节点状态
 function check_node_status() {
-    # 获取公共 IP 地址
-    PUBLIC_IP=$(get_public_ip)
-
     echo "请访问以下 URL 来检查节点状态："
-    echo "http://$PUBLIC_IP:8000/dashboard/"
+    echo "http://[你的服务器IP]:8000/dashboard/"
     echo "请注意，确保你的服务器允许外部访问 8000 端口。"
 
     # 等待用户按任意键返回主菜单
