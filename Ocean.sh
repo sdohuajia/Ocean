@@ -79,11 +79,11 @@ function setup_and_start_node() {
 # 查看 Docker 日志
 function view_logs() {
     echo "查看 Docker 日志..."
-    if [ -d "ocean" ]; then
-        cd ocean || { echo "无法进入目录"; exit 1; }
+    if [ -d "/root/ocean" ]; then
+        cd /root/ocean || { echo "无法进入目录"; exit 1; }
         docker-compose logs -f
     else
-        echo "请先启动节点，目录 'ocean' 不存在。"
+        echo "请先启动节点，目录 '/root/ocean' 不存在。"
     fi
 }
 
