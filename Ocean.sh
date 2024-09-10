@@ -78,7 +78,6 @@ function setup_and_start_node() {
 
 function view_logs() {
     echo "查看 Docker 日志..."
-    cd ~ || { echo "无法进入主目录"; exit 1; }
     if [ -d "/root/ocean" ]; then
         cd /root/ocean && docker-compose logs -f || { echo "无法查看 Docker 日志"; exit 1; }
     else
