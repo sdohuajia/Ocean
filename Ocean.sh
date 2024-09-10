@@ -93,17 +93,6 @@ function view_logs() {
     fi
 }
 
-# 检查节点状态
-function check_node_status() {
-    echo "请访问以下 URL 来检查节点状态："
-    echo "http://[你的服务器IP]:8000/dashboard/"
-    echo "请注意，确保你的服务器允许外部访问 8000 端口。"
-
-    # 等待用户按任意键返回主菜单
-    read -p "按任意键返回主菜单..." -n1
-    echo ""
-}
-
 # 主菜单函数
 function main_menu() {
     while true; do
@@ -115,9 +104,8 @@ function main_menu() {
         echo "请选择要执行的操作:"
         echo "1. 启动节点"
         echo "2. 查看日志"
-        echo "3. 检查节点状态"
-        echo "4. 退出"
-        echo -n "请输入选项 (1/2/3/4): "
+        echo "3. 退出"
+        echo -n "请输入选项 (1/2/3): "
         read -r choice
 
         case $choice in
@@ -130,14 +118,11 @@ function main_menu() {
                 view_logs
                 ;;
             3)
-                check_node_status
-                ;;
-            4)
                 echo "退出脚本。"
                 exit 0
                 ;;
             *)
-                echo "无效选项，请选择 1、2、3 或 4。"
+                echo "无效选项，请选择 1、2、3 。"
                 ;;
         esac
     done
